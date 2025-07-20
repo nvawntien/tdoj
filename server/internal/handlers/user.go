@@ -64,3 +64,34 @@ func (h *UserHandler) Register(c *gin.Context) {
 		Data:    user,
 	})
 }
+
+func (h *UserHandler) Login(c *gin.Context) {
+	var req request.LoginRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, utils.Response{
+			Status:  http.StatusBadRequest,
+			Message: err.Error(),
+			Data:    nil,
+		})
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	token, err := h.svc.Login(ctx, req)
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, utils.Response{
+			Status: http.StatusUnauthorized,
+			Message: err.Error(),
+			Data: nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.Response{
+		Status: http.StatusOK,
+		Message: "Login succesfully",
+		Data: token,
+	})
+}

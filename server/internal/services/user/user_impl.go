@@ -56,3 +56,26 @@ func (s *userServiceImpl) Register(ctx context.Context, req request.RegisterRequ
 
 	return user, nil
 }
+
+func (s *userServiceImpl) Login(ctx context.Context, req request.LoginRequest) (string, error) {
+	user, err := s.userRepo.GetUserByEmail(ctx, req.Email)
+
+	if err != nil {
+		return "", errors.New("Get user by email failed")
+	}
+	if user == nil {
+		return "", customErrors.UserNotFound
+	}
+
+	if !utils.ComparePasswords(user.Password, []byte(req.Password)) {
+		return "", customErrors.PasswordIncorrect
+	}
+
+	token, err := utils.GenerateToken(user.UserID)
+
+	if err != nil {
+		return "", errors.New("Generate token failed")
+	}
+
+	return token, nil
+}

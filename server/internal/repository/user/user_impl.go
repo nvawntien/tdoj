@@ -4,6 +4,8 @@ import (
 	customErrors "backend/internal/errors"
 	"backend/internal/models"
 	"context"
+	"database/sql"
+	"errors"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
@@ -39,10 +41,32 @@ func (r *userRepositoryImpl) CreateUser(ctx context.Context, user *models.User) 
 			if err.Code.Name() == "unique_violation" {
 				return customErrors.UserConflict
 			}
-		}	
+		}
 
 		return err
 	}
 
 	return nil
+}
+
+func (r *userRepositoryImpl) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+	var user models.User
+	query := `
+		SELECT user_id, full_name, email, password
+		FROM users
+		WHERE email = $1
+		LIMIT 1
+	`
+
+	err := r.db.GetContext(ctx, &user, query, email)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	return &user, nil
 }
