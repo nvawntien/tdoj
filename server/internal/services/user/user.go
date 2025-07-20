@@ -1,4 +1,11 @@
 package services
 
+import (
+	"backend/internal/models"
+	"backend/internal/request"
+	"context"
+)
+
 type UserService interface {
+	Register(ctx context.Context, req request.RegisterRequest) (*models.User, error)
 }
