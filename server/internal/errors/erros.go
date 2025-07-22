@@ -7,3 +7,7 @@ var (
 	UserNotFound      = errors.New("User not found")
 	PasswordIncorrect = errors.New("Password is incorrect")
 )
+
+var (
+	ErrGenerateToken = errors.New("Generate token failed")
+)

@@ -33,24 +33,16 @@ func Load() (*Config, error) {
 
 	return &Config{
 		Server: ServerConfig{
-			Port: getEnv("PORT", "8080"),
-			Env:  getEnv("Env", "development"),
+			Port: os.Getenv("PORT"),
+			Env:  os.Getenv("ENV"),
 		},
 
 		Database: DatabaseConfig{
-			Host:     getEnv("DB_HOST", "localhost"),
-			Port:     getEnv("DB_PORT", "1526"),
-			Username: getEnv("DB_USERNAME", "vantien1526"),
-			Password: getEnv("DB_PASSWORD", "lpop3kiss"),
-			DbName:   getEnv("DB_NAME", "tamduong"),
+			Host:     os.Getenv("DB_HOST"),
+			Port:     os.Getenv("DB_PORT"),
+			Username: os.Getenv("DB_USERNAME"),
+			Password: os.Getenv("DB_PASSWORD"),
+			DbName:   os.Getenv("DB_NAME"),
 		},
 	}, nil
-}
-
-func getEnv(key, fallback string) string {
-	if value := os.Getenv(key); value != "" {
-		return value
-	}
-
-	return fallback
 }

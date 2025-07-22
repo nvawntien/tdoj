@@ -7,9 +7,10 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var SECRET_KEY = []byte(os.Getenv("JWT_SECRET"))
+var SECRET_KEY = [2][]byte{[]byte(os.Getenv("ACCESS_JWT_SECRET")), []byte(os.Getenv("REFRESH_JWT_SECRET"))}
 
-func GenerateToken(UserID string) (string, error) {
+
+func GenerateToken(UserID string, index int) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id": UserID,
 		"exp":     time.Now().Add(time.Hour * 24).Unix(),
@@ -17,7 +18,7 @@ func GenerateToken(UserID string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	result, err := token.SignedString([]byte(SECRET_KEY))
+	result, err := token.SignedString([]byte(SECRET_KEY[index]))
 
 	if err != nil {
 		return "", err

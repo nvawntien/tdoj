@@ -78,7 +78,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 
 	ctx := c.Request.Context()
 
-	token, err := h.svc.Login(ctx, req)
+	accessToken, refreshToken, err := h.svc.Login(ctx, req)
 
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, utils.Response{
@@ -89,9 +89,24 @@ func (h *UserHandler) Login(c *gin.Context) {
 		return
 	}
 
+	c.SetCookie("access_token", accessToken, 900, "/", "localhost", false, true)
+	c.SetCookie("refresh_token", refreshToken, 3600 * 2, "/", "localhost", false, true)
+	
 	c.JSON(http.StatusOK, utils.Response{
 		Status: http.StatusOK,
 		Message: "Login succesfully",
-		Data: token,
+		Data: accessToken,
 	})
 }
+
+func (h *UserHandler) Logout(c *gin.Context) {
+	c.SetCookie("access_token", "", -1, "/", "localhost", false, true)
+	c.SetCookie("refresh_token", "", -1, "/", "localhost", false, true)
+
+	c.JSON(http.StatusOK, utils.Response{
+		Status: http.StatusOK,
+		Message: "Logout succesfully",
+		Data: nil,
+	})
+}
+

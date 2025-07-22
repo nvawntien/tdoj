@@ -5,7 +5,6 @@ import (
 	"backend/internal/models"
 	"context"
 	"database/sql"
-	"errors"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
@@ -61,7 +60,7 @@ func (r *userRepositoryImpl) GetUserByEmail(ctx context.Context, email string) (
 	err := r.db.GetContext(ctx, &user, query, email)
 
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
+		if err == sql.ErrNoRows {
 			return nil, nil
 		}
 
