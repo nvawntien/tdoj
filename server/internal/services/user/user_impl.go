@@ -43,7 +43,7 @@ func (s *userServiceImpl) Register(ctx context.Context, req request.RegisterRequ
 		UserID:    uuid.NewString(),
 		FullName:  req.FullName,
 		Email:     req.Email,
-		Username:  req.Email,
+		Username:  req.Username,
 		Password:  hashedPassword,
 		Rating:    0,
 		CreatedAt: time.Now(),
@@ -84,4 +84,18 @@ func (s *userServiceImpl) Login(ctx context.Context, req request.LoginRequest) (
 	}
 
 	return accessToken, refreshToken, nil
+}
+
+func (s *userServiceImpl) GetProfile(ctx context.Context, userID string) (*models.User, error) {
+	user, err := s.userRepo.GetUserByID(ctx, userID)
+
+	if err != nil {
+		return nil, errors.New("Get user by id failed")
+	}
+
+	if user == nil {
+		return nil, customErrors.UserNotFound
+	}
+
+	return user, nil
 }

@@ -51,13 +51,35 @@ func (r *userRepositoryImpl) CreateUser(ctx context.Context, user *models.User) 
 func (r *userRepositoryImpl) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
 	var user models.User
 	query := `
-		SELECT user_id, full_name, email, password
+		SELECT user_id, full_name, email, password, rating
 		FROM users
 		WHERE email = $1
 		LIMIT 1
 	`
 
 	err := r.db.GetContext(ctx, &user, query, email)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (r *userRepositoryImpl) GetUserByID(ctx context.Context, ID string) (*models.User, error) {
+	var user models.User
+	query := `
+		SELECT user_id, full_name, email, username, rating, created_at, updated_at
+		FROM users
+		WHERE user_id = $1
+		LIMIT 1
+	`
+
+	err := r.db.GetContext(ctx, &user, query, ID)
 
 	if err != nil {
 		if err == sql.ErrNoRows {

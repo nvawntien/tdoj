@@ -4,7 +4,6 @@ import (
 	"os"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -27,10 +26,6 @@ type DatabaseConfig struct {
 }
 
 func Load() (*Config, error) {
-	if err := godotenv.Load(); err != nil {
-		return nil, err
-	}
-
 	return &Config{
 		Server: ServerConfig{
 			Port: os.Getenv("PORT"),

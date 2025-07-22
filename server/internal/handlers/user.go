@@ -81,32 +81,63 @@ func (h *UserHandler) Login(c *gin.Context) {
 	accessToken, refreshToken, err := h.svc.Login(ctx, req)
 
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, utils.Response{
-			Status: http.StatusUnauthorized,
+		c.JSON(http.StatusInternalServerError, utils.Response{
+			Status:  http.StatusInternalServerError,
 			Message: err.Error(),
-			Data: nil,
+			Data:    nil,
 		})
 		return
 	}
 
-	c.SetCookie("access_token", accessToken, 900, "/", "localhost", false, true)
-	c.SetCookie("refresh_token", refreshToken, 3600 * 2, "/", "localhost", false, true)
-	
+	c.SetCookie("access_token", accessToken, 900, "/", "", false, true)
+	c.SetCookie("refresh_token", refreshToken, 3600*2, "/tdoj/user/refresh-token", "localhost", false, true)
+
 	c.JSON(http.StatusOK, utils.Response{
-		Status: http.StatusOK,
+		Status:  http.StatusOK,
 		Message: "Login succesfully",
-		Data: accessToken,
+		Data:    nil,
 	})
 }
 
 func (h *UserHandler) Logout(c *gin.Context) {
-	c.SetCookie("access_token", "", -1, "/", "localhost", false, true)
-	c.SetCookie("refresh_token", "", -1, "/", "localhost", false, true)
+	c.SetCookie("access_token", "", -1, "/", "", false, true)
+	c.SetCookie("refresh_token", "", -1, "/", "", false, true)
 
 	c.JSON(http.StatusOK, utils.Response{
-		Status: http.StatusOK,
+		Status:  http.StatusOK,
 		Message: "Logout succesfully",
-		Data: nil,
+		Data:    nil,
 	})
 }
 
+func (h *UserHandler) GetProfile(c *gin.Context) {
+	userID, exists := c.Get("user_id")
+
+	if !exists {
+		c.JSON(http.StatusUnauthorized, utils.Response{
+			Status:  http.StatusUnauthorized,
+			Message: "Cannot get user id from context",
+			Data:    nil,
+		})
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	user, err := h.svc.GetProfile(ctx, userID.(string))
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.Response{
+			Status:  http.StatusInternalServerError,
+			Message: err.Error(),
+			Data:    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.Response{
+		Status:  http.StatusOK,
+		Message: "Get your profile succesfully",
+		Data:    user,
+	})
+}
