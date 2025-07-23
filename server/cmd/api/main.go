@@ -23,7 +23,8 @@ func main() {
 	}
 
 	r := gin.Default()
-
+	config.SetUpCors(r)
+	
 	route := r.Group("/tdoj")
 	routes.SetUpUserRouter(route, contain.UserHandler)
 

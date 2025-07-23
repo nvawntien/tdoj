@@ -11,3 +11,7 @@ var (
 var (
 	ErrGenerateToken = errors.New("Generate token failed")
 )
+
+var (
+	ErrCheckExistsUserByEmail = errors.New("Check exists user by email failed")
+)

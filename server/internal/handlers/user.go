@@ -54,8 +54,6 @@ func (h *UserHandler) Register(c *gin.Context) {
 				Data:    nil,
 			})
 		}
-
-		return
 	}
 
 	c.JSON(http.StatusOK, utils.Response{
@@ -94,7 +92,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, utils.Response{
 		Status:  http.StatusOK,
-		Message: "Login succesfully",
+		Message: "Login successfully",
 		Data:    nil,
 	})
 }
@@ -105,7 +103,7 @@ func (h *UserHandler) Logout(c *gin.Context) {
 
 	c.JSON(http.StatusOK, utils.Response{
 		Status:  http.StatusOK,
-		Message: "Logout succesfully",
+		Message: "Logout successfully",
 		Data:    nil,
 	})
 }
@@ -137,7 +135,7 @@ func (h *UserHandler) GetProfile(c *gin.Context) {
 
 	c.JSON(http.StatusOK, utils.Response{
 		Status:  http.StatusOK,
-		Message: "Get your profile succesfully",
+		Message: "Get your profile successfully",
 		Data:    user,
 	})
 }

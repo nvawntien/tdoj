@@ -26,7 +26,7 @@ func NewUserService(userRepo repository.UserRepository) UserService {
 func (s *userServiceImpl) Register(ctx context.Context, req request.RegisterRequest) (*models.User, error) {
 	exists, err := s.userRepo.CheckExistsUserByEmail(ctx, req.Email)
 	if err != nil {
-		return nil, errors.New("Check exists user by email failed")
+		return nil, customErrors.ErrCheckExistsUserByEmail
 	}
 
 	if exists {
@@ -99,3 +99,4 @@ func (s *userServiceImpl) GetProfile(ctx context.Context, userID string) (*model
 
 	return user, nil
 }
+
