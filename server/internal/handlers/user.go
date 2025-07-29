@@ -139,3 +139,42 @@ func (h *UserHandler) GetProfile(c *gin.Context) {
 		Data:    user,
 	})
 }
+
+func (h *UserHandler) ForgotPassword(c *gin.Context) {
+	var req request.ForgotPasswordRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, utils.Response{
+			Status: http.StatusBadRequest,
+			Message: err.Error(),
+			Data: nil,
+		})
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	if err := h.svc.ForgotPassword(ctx, req.Email); err != nil {
+		if err == customErrors.UserNotFound {
+			c.JSON(http.StatusBadRequest, utils.Response{
+				Status: http.StatusBadRequest,
+				Message: err.Error(),
+				Data: nil,
+			})
+		} else {
+			c.JSON(http.StatusInternalServerError, utils.Response{
+				Status: http.StatusInternalServerError,
+				Message: err.Error(),
+				Data: nil,
+			})
+		}
+
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.Response{
+		Status: http.StatusOK,
+		Message: "Forgot password succesfully, please check your email to verify",
+		Data: nil,
+	})
+}

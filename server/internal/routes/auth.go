@@ -15,6 +15,6 @@ func SetUpUserRouter(route *gin.RouterGroup, userHandler *handlers.UserHandler) 
 		api.POST("/login", userHandler.Login)
 		api.GET("/logout", userHandler.Logout)
 		api.GET("/profile", middleware.AuthMiddleWare(), userHandler.GetProfile)
-		//api.POST("/forgot-password", userHandler.ForgotPassword)
+		api.POST("/forgot-password", userHandler.ForgotPassword)
 	}
 }

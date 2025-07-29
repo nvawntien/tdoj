@@ -15,3 +15,7 @@ var (
 var (
 	ErrCheckExistsUserByEmail = errors.New("Check exists user by email failed")
 )
+
+var (
+	ErrGenerateOTP = errors.New("Generate OTP faield")
+)
