@@ -1,13 +1,11 @@
-// src/services/authService.js
-import axios from 'axios';
+import axios from 'axios'
 
-const API_BASE_URL = 'http://localhost:8080'; // chỉnh lại nếu BE khác cổng
+const API_URL = 'http://localhost:8080/tdoj/user'
 
-export async function registerUser(userData) {
-  try {
-    const res = await axios.post(`${API_BASE_URL}/tdoj/user/register`, userData);
-    return res.data;
-  } catch (err) {
-    throw err.response?.data?.message || 'Đăng ký thất bại';
-  }
+export const registerUser = (formData) => {
+    return axios.post(`${API_URL}/register`, formData)
+}
+
+export const loginUser = (formData) => {
+    return axios.post(`${API_URL}/login`, formData)
 }
